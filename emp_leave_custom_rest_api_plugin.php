@@ -28,6 +28,18 @@ function emp_leave_custom_rest_api(){
             'callback' => 'create_employee_leave'
         )
     );
+
+
+    //this route for Show the leave only for the id's mentioned.
+
+    register_rest_route(
+        'leave/v1','/requests/(?P<id>[0-9]+)',
+        array
+        (
+            'methods' => 'GET',
+            'callback' => 'get_leave_data'
+        )
+    );
 }
 
 
@@ -58,6 +70,16 @@ function create_employee_leave(WP_REST_Request $request){
         'success' => true,
         'description' => 'leave request recived successfully',
         'data' => $data,
+    );
+}
+
+
+//request specific function like id specific i mean Show the leave only for the id's mentioned.
+function get_leave_data(WP_REST_Request $request){
+    $id = $request->get_param('id');
+    return array(
+        'id' => $id,
+        'message' => 'Leave found'
     );
 }
 
