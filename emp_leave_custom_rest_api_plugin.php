@@ -1,6 +1,6 @@
 <?php 
 /*
-plugin name: emp_leave_custom_rest_api
+plugin name: emp_leave_custom_rest_api_plugin
 description: for creating this plugin for the handle the employees leave
 version: 0.1.0
 author: Het Agravat
