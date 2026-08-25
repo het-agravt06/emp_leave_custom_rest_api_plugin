@@ -59,7 +59,6 @@ function create_employee_leave(WP_REST_Request $request){
         'description' => 'leave request recived successfully',
         'data' => $data,
     );
-
 }
 
 ?>
