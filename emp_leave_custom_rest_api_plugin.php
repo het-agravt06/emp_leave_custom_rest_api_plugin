@@ -40,6 +40,39 @@ function emp_leave_custom_rest_api(){
             'callback' => 'get_leave_data'
         )
     );
+
+    //for the check PUT method in postman select the PUT method with this url http://localhost:10004/wp-json/leave/v1/requests/1 with body->raw->json and click send button
+
+    register_rest_route(
+        'leave/v1','/requests/(?P<id>[0-9]+)',
+        array
+        (
+            'methods' => 'PUT',
+            'callback' => 'update_leave_data'
+        )
+    );
+
+    //for the check PATCH method in postman select the PATCH method with this url http://localhost:10004/wp-json/leave/v1/requests/1 with body->raw->json and click send button (same as PUT but for partial update)
+
+    register_rest_route(
+        'leave/v1','/requests/(?P<id>[0-9]+)',
+        array
+        (
+            'methods' => 'PATCH',
+            'callback' => 'update_leave_data'
+        )
+    );
+
+    //for the check DELETE method in postman select the DELETE method with this url http://localhost:10004/wp-json/leave/v1/requests/1 and click send button
+
+    register_rest_route(
+        'leave/v1','/requests/(?P<id>[0-9]+)',
+        array
+        (
+            'methods' => 'DELETE',
+            'callback' => 'delete_leave_data'
+        )
+    );
 }
 
 
@@ -80,6 +113,32 @@ function get_leave_data(WP_REST_Request $request){
     return array(
         'id' => $id,
         'message' => 'Leave found'
+    );
+}
+
+
+//update function for update the leave data of the specific id mentioned (works for both PUT and PATCH method).
+function update_leave_data(WP_REST_Request $request){
+    $id = $request->get_param('id');
+    $data = $request->get_json_params();
+
+    return array(
+        'success' => true,
+        'id' => $id,
+        'description' => 'leave request updated successfully',
+        'data' => $data,
+    );
+}
+
+
+//delete function for delete the leave data of the specific id mentioned.
+function delete_leave_data(WP_REST_Request $request){
+    $id = $request->get_param('id');
+
+    return array(
+        'success' => true,
+        'id' => $id,
+        'description' => 'leave request deleted successfully',
     );
 }
 

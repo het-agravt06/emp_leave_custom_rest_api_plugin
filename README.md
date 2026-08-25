@@ -10,3 +10,27 @@
 
 #id specific get deatails
 //http://localhost:10004/wp-json/leave/v1/requests/2 (2 is a id)
+
+#put method check in postman 
+http://localhost:10004/wp-json/leave/v1/requests/1 body->raw->json and click send button
+
+{
+    "name": "Het",
+    "leave_type": "casual",
+    "from_date": "2026-08-29",
+    "to_date": "2026-09-02",
+    "reason": "Going to hometown",
+    "status": "approved"
+}
+
+
+#patch method check in postman
+http://localhost:10004/wp-json/leave/v1/requests/1 with body->raw->json and click send button (same as PUT but for partial update)
+
+{
+    "status": "rejected"
+}
+
+#delete method in postman
+http://localhost:10004/wp-json/leave/v1/requests/2 and click send button
+
