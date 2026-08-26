@@ -121,34 +121,43 @@
 
 
     function create_employee_leave(WP_REST_Request $request)
-    {
-        global $wpdb;
+{
+    global $wpdb;
 
-        $table_name = $wpdb->prefix . 'employee_leaves';
+    $table_name = $wpdb->prefix . 'employee_leaves';
 
-        $data = $request->get_json_params();
+    $data = $request->get_json_params();
 
-        $wpdb->insert(
-            $table_name,
+    $required_fields = array(
+        'employee_name',
+        'employee_email',
+        'leave_type',
+        'from_date',
+        'to_date',
+        'reason'
+    );
+
+    $missing_fields = array();
+
+    foreach ($required_fields as $field) {
+        if (empty($data[$field])) {
+            $missing_fields[] = $field;
+        }
+    }
+
+    if (!empty($missing_fields)) {
+        return new WP_Error(
+            'missing_fields',
+            'Required fields are missing.',
             array(
-                'employee_name'  => $data['employee_name'],
-                'employee_email' => $data['employee_email'],
-                'leave_type'     => $data['leave_type'],
-                'from_date'      => $data['from_date'],
-                'to_date'        => $data['to_date'],
-                'reason'         => $data['reason'],
-                'status'         => 'pending',
-                'created_at'     => current_time('mysql'),
+                'status' => 400,
+                'fields' => $missing_fields
             )
         );
-
-        return array(
-            'success' => true,
-            'message' => 'Leave request created successfully',
-            'id'      => $wpdb->insert_id,
-            'data'    => $data,
-        );
     }
+
+    // Database insert will come here...
+}
 
 
     //request specific function like id specific i mean Show the leave only for the id's mentioned.
@@ -167,7 +176,15 @@
             ),
             ARRAY_A
         );
-
+        if (!$leave) {
+            return new WP_Error(
+                'leave_not_found',
+                'Leave request not found.',
+                array(
+                    'status' => 404
+                )
+            );
+        }
         return $leave;
     }
 
@@ -182,6 +199,24 @@
         $id = $request->get_param('id');
 
         $data = $request->get_json_params();
+
+        // Check whether leave exists
+    $leave = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT id FROM $table_name WHERE id = %d",
+            $id
+        )
+    );
+
+    if (!$leave) {
+        return new WP_Error(
+            'leave_not_found',
+            'Leave request not found.',
+            array(
+                'status' => 404
+            )
+        );
+    }
 
         $wpdb->update(
             $table_name,
@@ -220,7 +255,26 @@
             '%d',
         )
     );
+    
+    if ($deleted === 0) {
+        return new WP_Error(
+            'leave_not_found',
+            'Leave request not found.',
+            array(
+                'status' => 404
+            )
+        );
+    }
 
+    if ($deleted === false) {
+        return new WP_Error(
+            'database_error',
+            'Unable to delete leave request.',
+            array(
+                'status' => 500
+            )
+        );
+    }
     return array(
         'success' => $deleted !== false,
         'message' => 'Leave request deleted successfully',
