@@ -1,10 +1,39 @@
 <?php 
+
+//when the plugin is activated then activation hook are run and call create_employee_leave_table this function
+register_activation_hook(__FILE__, 'create_employee_leave_table');
+
 /*
 plugin name: emp_leave_custom_rest_api_plugin
 description: for creating this plugin for the handle the employees leave
 version: 0.1.1
 author: Het Agravat
 */
+
+//creating a database 
+function create_employee_leave_table()
+{
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'employee_leaves';
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    $sql = "CREATE TABLE $table_name (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        employee_name VARCHAR(100) NOT NULL,
+        employee_email VARCHAR(100) NOT NULL,
+        leave_type VARCHAR(50) NOT NULL,
+        from_date DATE NOT NULL,
+        to_date DATE NOT NULL,
+        reason TEXT,
+        status VARCHAR(20) NOT NULL DEFAULT 'pending',
+        created_at DATETIME NOT NULL,
+        PRIMARY KEY (id)
+    ) {$wpdb->get_charset_collate()};";
+
+    dbDelta($sql);
+}
 
 add_action("rest_api_init","emp_leave_custom_rest_api");
 
@@ -141,5 +170,6 @@ function delete_leave_data(WP_REST_Request $request){
         'description' => 'leave request deleted successfully',
     );
 }
+
 
 ?>
