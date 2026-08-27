@@ -338,7 +338,6 @@ function delete_leave_data(WP_REST_Request $request)
 
 
 //html form 
-// HTML form
 function employee_leave_form()
 {
     ob_start();
@@ -357,7 +356,7 @@ function employee_leave_form()
                     name="employee_name"
                     required>
             </div>
-
+            <br>
             <div>
                 <label for="employee_email">Employee Email</label>
                 <input
@@ -366,7 +365,7 @@ function employee_leave_form()
                     name="employee_email"
                     required>
             </div>
-
+            <br>
             <div>
                 <label for="leave_type">Leave Type</label>
                 <select
@@ -379,7 +378,7 @@ function employee_leave_form()
                     <option value="emergency">Emergency Leave</option>
                 </select>
             </div>
-
+            <br>
             <div>
                 <label for="from_date">From Date</label>
                 <input
@@ -388,7 +387,7 @@ function employee_leave_form()
                     name="from_date"
                     required>
             </div>
-
+            <br>
             <div>
                 <label for="to_date">To Date</label>
                 <input
@@ -397,7 +396,7 @@ function employee_leave_form()
                     name="to_date"
                     required>
             </div>
-
+            <br>
             <div>
                 <label for="reason">Reason</label>
                 <textarea
@@ -405,7 +404,7 @@ function employee_leave_form()
                     name="reason"
                     required></textarea>
             </div>
-
+            <br>
             <button type="submit">
                 Submit Leave
             </button>
