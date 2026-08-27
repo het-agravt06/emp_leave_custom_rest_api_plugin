@@ -1,14 +1,15 @@
-    <?php 
-
-    //when the plugin is activated then activation hook are run and call create_employee_leave_table this function
-    register_activation_hook(__FILE__, 'create_employee_leave_table');
-
+<?php 
     /*
     plugin name: emp_leave_custom_rest_api_plugin
     description: for creating this plugin for the handle the employees leave
     version: 0.1.1
     author: Het Agravat
     */
+
+    //when the plugin is activated then activation hook are run and call create_employee_leave_table this function
+    register_activation_hook(__FILE__, 'create_employee_leave_table');
+
+    
 
     //creating a database 
     function create_employee_leave_table()
@@ -45,7 +46,8 @@
             '/requests',
             array(
                 'methods' => 'GET',
-                'callback' => 'get_employee_leaves'
+                'callback' => 'get_employee_leaves',
+                'permission_callback' => '__return_true'
             )
         );
         
@@ -54,7 +56,8 @@
             'leave/v1','/requests',
             array(
                 'methods' => 'POST',
-                'callback' => 'create_employee_leave'
+                'callback' => 'create_employee_leave',
+                'permission_callback' => '__return_true'
             )
         );
 
@@ -66,7 +69,8 @@
             array
             (
                 'methods' => 'GET',
-                'callback' => 'get_leave_data'
+                'callback' => 'get_leave_data',
+                'permission_callback' => '__return_true'
             )
         );
 
@@ -77,7 +81,8 @@
             array
             (
                 'methods' => 'PUT',
-                'callback' => 'update_leave_data'
+                'callback' => 'update_leave_data',
+                'permission_callback' => '__return_true'
             )
         );
 
@@ -88,7 +93,8 @@
             array
             (
                 'methods' => 'PATCH',
-                'callback' => 'update_leave_data'
+                'callback' => 'update_leave_data',
+                'permission_callback' => '__return_true'
             )
         );
 
@@ -99,7 +105,8 @@
             array
             (
                 'methods' => 'DELETE',
-                'callback' => 'delete_leave_data'
+                'callback' => 'delete_leave_data',
+                'permission_callback' => '__return_true'
             )
         );
     }
@@ -121,7 +128,7 @@
 
 
     function create_employee_leave(WP_REST_Request $request)
-{
+    {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'employee_leaves';
@@ -157,7 +164,7 @@
     }
 
     // Database insert will come here...
-}
+    }
 
 
     //request specific function like id specific i mean Show the leave only for the id's mentioned.
@@ -239,7 +246,7 @@
 
     //delete function for delete the leave data of the specific id mentioned.
     function delete_leave_data(WP_REST_Request $request)
-{
+    {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'employee_leaves';
@@ -280,7 +287,103 @@
         'message' => 'Leave request deleted successfully',
         'id'      => $id,
     );
-}
+    }
 
 
+
+//html form 
+    function employee_leave_form()
+    {
+        ob_start();
     ?>
+
+    <div class="employee-leave-form">
+
+        <h2>Employee Leave Request</h2>
+
+        <form id="employee-leave-form">
+
+            <div>
+                <label for="employee_name">Employee Name</label>
+                <input
+                    type="text"
+                    id="employee_name"
+                    name="employee_name"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="employee_email">Employee Email</label>
+                <input
+                    type="email"
+                    id="employee_email"
+                    name="employee_email"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="leave_type">Leave Type</label>
+                <select
+                    id="leave_type"
+                    name="leave_type"
+                    required
+                >
+                    <option value="">Select Leave Type</option>
+                    <option value="casual">Casual Leave</option>
+                    <option value="sick">Sick Leave</option>
+                    <option value="emergency">Emergency Leave</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="from_date">From Date</label>
+                <input
+                    type="date"
+                    id="from_date"
+                    name="from_date"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="to_date">To Date</label>
+                <input
+                    type="date"
+                    id="to_date"
+                    name="to_date"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="reason">Reason</label>
+                <textarea
+                    id="reason"
+                    name="reason"
+                    required
+                ></textarea>
+            </div>
+
+            <button type="submit">
+                Submit Leave
+            </button>
+
+        </form>
+
+        <div id="leave-response"></div>
+
+    </div>
+
+    <?php
+
+        return ob_get_clean();
+    }
+
+    add_shortcode('employee_leave_form', 'employee_leave_form');
+
+
+    add_shortcode('employee_leave_form', 'employee_leave_form');
+
+
